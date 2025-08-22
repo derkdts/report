@@ -1,0 +1,42 @@
+from flask import Flask, render_template
+from flask_sqlalchemy import SQLAlchemy
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'secretkey123'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
+admin = Admin(app, name='Админка', template_mode='bootstrap3')
+
+# Модель таблицы
+class Record(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.String(20))
+    legal_count = db.Column(db.Integer)
+    person_count = db.Column(db.Integer)
+    tickets = db.Column(db.Integer)
+
+    def __repr__(self):
+        return f"<Record {self.date}>"
+
+# Добавляем модель в админку
+admin.add_view(ModelView(Record, db.session))
+
+@app.route('/')
+def index():
+    records = Record.query.all()
+    return render_template('index.html', records=records)
+
+if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
+        # Если таблица пустая, добавим пару строк для примера
+        if Record.query.count() == 0:
+            sample1 = Record(date='2025-08-21', legal_count=115, person_count=802, tickets=20)
+            sample2 = Record(date='2025-08-22', legal_count=120, person_count=790, tickets=15)
+            db.session.add_all([sample1, sample2])
+            db.session.commit()
+    app.run(debug=True)
