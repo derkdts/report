@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>Таблица</title>
+    <style>
+        table {
+            border-collapse: collapse; 
+            font-family: Arial, sans-serif; 
+            font-size: 14px; 
+            width: 100%; 
+            border: 1px solid #000;
+        }
+        th, td {
+            border: 1px solid #000; 
+            padding: 6px; 
+            text-align: center;
+        }
+        th {
+            background-color: #d0d0d0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Данные по инцидентам</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Дата</th>
+                <th>Количество ЮЛ</th>
+                <th>Количество ФЛ</th>
+                <th>Тикеты</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in records %}
+            <tr>
+                <td>{{ r.date }}</td>
+                <td>{{ r.legal_count }}</td>
+                <td>{{ r.person_count }}</td>
+                <td>{{ r.tickets }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p><a href="/admin/">Перейти в админку</a></p>
+</body>
+</html>
